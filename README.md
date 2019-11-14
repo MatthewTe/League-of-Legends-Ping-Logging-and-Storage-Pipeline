@@ -10,7 +10,10 @@ The IP addresses for the various servers are as follows:
 - LAN - 104.160.136.3
 
 
-This repo contains both the application that logs the ping between the host machine and the league of legend server as well as a ETL pipeline built around the logging application that maintains a database of this timeseries data.
+This repo contains both the application that logs the ping between the host machine and the league of legend server as well as an ETL pipeline built around the logging application that maintains a database of the data in a historical timeseries.
 
-## Ping logging application 
+## Ping logging application
+
+
+
 ## Ping ETL pipeline
