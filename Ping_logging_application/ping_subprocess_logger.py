@@ -8,11 +8,22 @@ from datetime import datetime
 
 class ping_data(object):
     """
-    # TODO: Add class docstring
-    """
-    # def __init__(self, arg):
+    This is the main object of the ping logging application and serves as the
+    unifying object for all the ping logging methods. The application takes
+    advantage mainly the subprocesses package to make use of the existing cmd
+    function 'ping' to track and log the ping given an ip address
 
-    def build_subprocess_dataframe(rows):
+    Parameters
+    ----------
+    ip_address : str
+        The ip address with which its ping will be tested
+    """
+    def __init__(self, ip_address):
+
+        # Declaring instance variables:
+        self.ip_address = ip_address
+
+    def build_subprocess_dataframe(self, rows):
         """This method performs the subprocess to test the ping towards a
         specified IP address, extracts the necessary data from the subprocess
         and creates a pandas series with said extracted data. The series is
@@ -36,10 +47,12 @@ class ping_data(object):
 
         # Looping the process of logging and recording ping according to method
         # input:
-        for i in range(rows):
+        for i in range(rows): # TODO: Change for loop to a While True loop for
+        # timer integration.
 
             # Calling the subprocess and storing the result as a variable:
-            subprocess_str = check_output('ping 104.160.131.3').decode('utf-8')
+            subprocess_str = check_output('ping {}'.format(self.ip_address)
+            }).decode('utf-8')
             #print(subprocess_str)
 
 
@@ -67,6 +80,7 @@ class ping_data(object):
         # Setting the index of the dataframe to the Time column:
         df_main.set_index('Time')
 
+        return df_main
 
 # Testing:
 #ping_data.build_subprocess_dataframe(10)
