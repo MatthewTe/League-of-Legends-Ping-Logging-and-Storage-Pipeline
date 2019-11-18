@@ -1,6 +1,7 @@
 # Importing subprocess related packages:
 import subprocess
 from subprocess import check_output
+import time
 
 # Importing data managment packages:
 import pandas as pd
@@ -17,24 +18,27 @@ class ping_data(object):
     ----------
     ip_address : str
         The ip address with which its ping will be tested
+
+    runtime : int
+        An integer that dictates how long the logging application will run
+        and continue to build the dataframe in minuites.
+
     """
-    def __init__(self, ip_address):
+    def __init__(self, ip_address, runtime):
 
         # Declaring instance variables:
         self.ip_address = ip_address
+        self.runtime = runtime
 
-    def build_subprocess_dataframe(self, rows):
+        # Building the data model as an instance dataframe:
+        self.data = build_subprocess_dataframe()
+
+    def build_subprocess_dataframe(self):
         """This method performs the subprocess to test the ping towards a
         specified IP address, extracts the necessary data from the subprocess
         and creates a pandas series with said extracted data. The series is
         then appened to a main dataframe. This process is repeated a specific
         number of times according to the input numbers of rows
-
-        Parameters
-        ----------
-        row : int
-            The number of rows the main dataframe will contain as it dictates
-            how many times the logging process will be performed
 
         Returns
         -------
@@ -45,14 +49,16 @@ class ping_data(object):
         # Creating empty main dataframe:
         df_main = pd.DataFrame(columns=['Time', 'Min', 'Max', 'Avg', '% Loss'])
 
+        # Declaring the time variable that will be used to end the while loop:
+        t_end = time.time() + 60 * self.runtime
+
         # Looping the process of logging and recording ping according to method
         # input:
-        for i in range(rows): # TODO: Change for loop to a While True loop for
-        # timer integration.
+        while time.time() < t_end:
 
             # Calling the subprocess and storing the result as a variable:
             subprocess_str = check_output('ping {}'.format(self.ip_address)
-            }).decode('utf-8')
+            ).decode('utf-8')
             #print(subprocess_str)
 
 
@@ -65,12 +71,12 @@ class ping_data(object):
             #print(min_ping, max_ping, avg_ping, loss_percentage)
 
             # Getting current time:
-            time = datetime.now()
+            curr_time = datetime.now()
             #print(time)
 
 
             # Creating a pandas series with collected data:
-            row = pd.Series([time, min_ping, max_ping, avg_ping, loss_percentage],
+            row = pd.Series([curr_time, min_ping, max_ping, avg_ping, loss_percentage],
             index = ['Time', 'Min', 'Max', 'Avg', '% Loss'])
 
             # Appending series to dataframe as row:
@@ -82,5 +88,24 @@ class ping_data(object):
 
         return df_main
 
+    def dataframe_to_csv(self, directory):
+        '''This method exports the dataframe that is built via the
+        build_subprocess_dataframe method to a specifed file directory
+
+        Parameters
+        ----------
+        directory : str
+            The string that dictates the path where the the .csv file will be
+            written to. The directory string is written with standard path
+            formatting path//path//path.
+        '''
+
+        # Exporting the dataframe to a .csv file:
+        self.data.to_csv(directory)
+ 
+
+
+
 # Testing:
-#ping_data.build_subprocess_dataframe(10)
+#test = ping_data('104.160.131.3')
+#print(test.build_subprocess_dataframe(3))
