@@ -31,7 +31,7 @@ class ping_data(object):
         self.runtime = runtime
 
         # Building the data model as an instance dataframe:
-        self.data = build_subprocess_dataframe()
+        self.data = self.build_subprocess_dataframe()
 
     def build_subprocess_dataframe(self):
         """This method performs the subprocess to test the ping towards a
@@ -102,7 +102,7 @@ class ping_data(object):
 
         # Exporting the dataframe to a .csv file:
         self.data.to_csv(directory)
- 
+
 
 
 
